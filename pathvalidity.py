@@ -1,11 +1,11 @@
 from pathlib import Path
 import os
 
-p = Path('../Timesheet4Escalate/TimesheetTemplate.csv')
+p = Path('../Timesheet4Escalate/TimesheetTemplate.xlsx')
 
 if p.exists():
     print('Yes the path exists')
-    file = open('../Timesheet4Escalate/TimesheetTemplate.csv', 'r')
+    file = open('../Timesheet4Escalate/TimesheetTemplate.xlsx', 'r')
     content = file.read()
     print(content)
     
@@ -20,5 +20,5 @@ print(os.getcwd())
 
 
 
-op = open('../Timesheet4Escalate/TimesheetTemplate.csv')
+
 

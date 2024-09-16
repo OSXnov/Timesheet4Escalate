@@ -6,18 +6,18 @@ import os
 import openpyxl
 from datetime import datetime
 
-# Function to insert date into Excel
+
 def insert_date_into_excel(date_value, file_path):
     try:
         workbook = openpyxl.load_workbook(file_path)
         sheet = workbook.active
-        sheet['B15'] = date_value
+        sheet['B15'] = date_value  
         workbook.save(file_path)
         messagebox.showinfo("Success", f"Date {date_value} has been inserted into cell B15.")
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred while inserting the date: {e}")
 
-# Function to open the calendar for selecting dates
+
 def open_calendar(file_path):
     calendar_window = tk.Toplevel(root)
     calendar_window.title("Select Date for TimeSheet Period")
@@ -43,7 +43,7 @@ def start_renaming():
     def open_name_window(new_file_path):
         name_window = tk.Toplevel(root)
         name_window.title("Set Name for Timesheet")
-        name_window.geometry("300x250")
+        name_window.geometry("400x400")
 
         def submit_name():
             user_name = name_entry.get()
@@ -79,12 +79,9 @@ def start_renaming():
         close_button = tk.Button(name_window, text="CLOSE", font=("Arial", 10), command=name_window.destroy)
         close_button.pack(pady=10)
 
-        next_button = tk.Button(name_window, text="NEXT", font=("Arial", 10))  # Next button does nothing for now
-        next_button.pack(pady=10)
-
     rename_window = tk.Toplevel(root)
     rename_window.title("Rename Timesheet File")
-    rename_window.geometry("300x200")
+    rename_window.geometry("300x300")
 
     label = tk.Label(rename_window, text="Enter the new file name:", font=("Arial", 10))
     label.pack(pady=10)
@@ -95,7 +92,7 @@ def start_renaming():
     def submit_file_name():
         new_file_name = file_name_entry.get()
         original_file = 'TimesheetTemplate.xlsx'
-        new_file_path = f'{new_file_name}.xlsx'
+        new_file_path = f'TimesheetStorage/{new_file_name}.xlsx'
 
         if os.path.exists(original_file):
             try:
@@ -111,25 +108,22 @@ def start_renaming():
     submit_button = tk.Button(rename_window, text="SUBMIT", command=submit_file_name, font=("Arial", 10))
     submit_button.pack(pady=10)
 
-    next_file_ren_button = tk.Button(rename_window, text="NEXT", font=("Arial", 10))  # Next button does nothing for now
-    next_file_ren_button.pack(pady=10)
 
-# Function to open the day-by-day input window
 def open_day_input_window(file_path):
     day_input_window = tk.Toplevel(root)
     day_input_window.title("Daily Timesheet Entry")
-    day_input_window.geometry("500x400")
+    day_input_window.geometry("500x500")
 
-    # Define the Excel slots for descriptions and hours
+ 
     description_slots = ['C15', 'C18', 'C21', 'C24', 'C27', 'C30', 'C33',
                          'I15', 'I18', 'I21', 'I24', 'I27', 'I30', 'I33']
     hours_slots = ['E15', 'E18', 'E21', 'E24', 'E27', 'E30', 'E33',
                    'J15', 'J18', 'J21', 'J24', 'J27', 'J30', 'J33']
 
     total_hours = 0
-    current_day_index = 0  # To keep track of the current day
+    current_day_index = 0  
 
-    # Function to load the workbook
+
     def load_workbook():
         try:
             return openpyxl.load_workbook(file_path)
@@ -144,10 +138,10 @@ def open_day_input_window(file_path):
 
     sheet = workbook.active
 
-    # List to keep track of hours for total calculation
+
     hours_list = []
 
-    # Function to update Excel cells
+ 
     def update_excel(description, hours, day_index):
         try:
             desc_slot = description_slots[day_index]
@@ -158,7 +152,7 @@ def open_day_input_window(file_path):
         except Exception as e:
             messagebox.showerror("Error", f"Could not update Excel file: {e}")
 
-    # Function to handle the checkbox state
+
     def toggle_worked():
         if not_worked_var.get():
             description_text.config(state='disabled')
@@ -167,7 +161,7 @@ def open_day_input_window(file_path):
             description_text.config(state='normal')
             hours_entry.config(state='normal')
 
-    # Function to proceed to the next day or submit
+    
     def next_day():
         nonlocal current_day_index, total_hours
         if not_worked_var.get():
@@ -188,12 +182,12 @@ def open_day_input_window(file_path):
         if current_day_index < len(description_slots):
             load_day()
         else:
-            # Calculate total hours
+            
             total_hours = sum(hours_list)
             messagebox.showinfo("Total Hours", f"Total Hours Worked: {total_hours}")
             day_input_window.destroy()
 
-    # Function to submit the data
+    
     def submit_data():
         nonlocal total_hours
         if not_worked_var.get():
@@ -213,7 +207,7 @@ def open_day_input_window(file_path):
         messagebox.showinfo("Total Hours", f"Total Hours Worked: {total_hours}")
         day_input_window.destroy()
 
-    # Function to load the current day's input fields
+    
     def load_day():
         day_label.config(text=f"Day {current_day_index + 1} of {len(description_slots)}")
         not_worked_var.set(0)
@@ -225,7 +219,7 @@ def open_day_input_window(file_path):
         description_text.delete('1.0', tk.END)
         hours_entry.delete(0, tk.END)
 
-    # UI Elements
+    
     day_label = tk.Label(day_input_window, text=f"Day {current_day_index + 1} of {len(description_slots)}",
                          font=("Arial", 12))
     day_label.pack(pady=10)
@@ -241,88 +235,32 @@ def open_day_input_window(file_path):
     description_label = tk.Label(day_input_window, text="Description of the day:", font=("Arial", 10))
     description_label.pack(pady=5)
 
-    description_text = scrolledtext.ScrolledText(day_input_window, width=60, height=10, font=("Arial", 10))
+    description_text = scrolledtext.ScrolledText(day_input_window, wrap=tk.WORD, width=40, height=4)
     description_text.pack(pady=5)
 
-    hours_label = tk.Label(day_input_window, text="Hours Worked:", font=("Arial", 10))
+    hours_label = tk.Label(day_input_window, text="Hours worked:", font=("Arial", 10))
     hours_label.pack(pady=5)
 
-    hours_entry = tk.Entry(day_input_window, width=10, font=("Arial", 10))
+    hours_entry = tk.Entry(day_input_window, width=10)
     hours_entry.pack(pady=5)
 
-    # Frame for buttons
-    button_frame = tk.Frame(day_input_window)
-    button_frame.pack(pady=20)
+    next_button = tk.Button(day_input_window, text="NEXT DAY", command=next_day, font=("Arial", 10))
+    next_button.pack(pady=10)
 
-    next_button = tk.Button(button_frame, text="NEXT", font=("Arial", 10), command=next_day)
-    next_button.pack(side=tk.RIGHT, padx=10)
+    submit_button = tk.Button(day_input_window, text="SUBMIT", command=submit_data, font=("Arial", 10))
+    submit_button.pack(pady=10)
 
-    submit_button = tk.Button(button_frame, text="SUBMIT", font=("Arial", 10), command=submit_data)
-
-    def load_day():
-        day_label.config(text=f"Day {current_day_index + 1} of {len(description_slots)}")
-        not_worked_var.set(0)
-        toggle_worked()
-
-        description_text.config(state='normal')
-        hours_entry.config(state='normal')
-
-        description_text.delete('1.0', tk.END)
-        hours_entry.delete(0, tk.END)
-
-        # If it's the last day, show the Submit button instead of Next
-        if current_day_index == len(description_slots) - 1:
-            next_button.pack_forget()
-            submit_button.pack(side=tk.RIGHT, padx=10)
-        else:
-            submit_button.pack_forget()
-            next_button.pack(side=tk.RIGHT, padx=10)
-
-    # Initialize the first day
+    
     load_day()
 
-    # Override the load_day function to handle button visibility
-    def load_day():
-        day_label.config(text=f"Day {current_day_index + 1} of {len(description_slots)}")
-        not_worked_var.set(0)
-        toggle_worked()
 
-        description_text.config(state='normal')
-        hours_entry.config(state='normal')
-
-        description_text.delete('1.0', tk.END)
-        hours_entry.delete(0, tk.END)
-
-        # If it's the last day, show the Submit button instead of Next
-        if current_day_index == len(description_slots) - 1:
-            next_button.pack_forget()
-            submit_button.pack(side=tk.RIGHT, padx=10)
-        else:
-            submit_button.pack_forget()
-            next_button.pack(side=tk.RIGHT, padx=10)
-
-    load_day()
-
-    # Handle window close event to save any progress
-    def on_close():
-        if messagebox.askokcancel("Quit", "Do you want to quit without submitting?"):
-            day_input_window.destroy()
-
-    day_input_window.protocol("WM_DELETE_WINDOW", on_close)
-
-# Main window setup
 root = tk.Tk()
-root.title("Timesheet Automator")
-root.geometry("400x300")
+root.title("Timesheet Management System")
+root.geometry("300x200")
 
-welcome_label = tk.Label(root, text="Welcome to the Timesheet Automator", font=("Arial", 14))
-welcome_label.pack(pady=30)
 
-start_button = tk.Button(root, text="START", font=("Arial", 12), command=start_renaming, width=10)
-start_button.pack(side=tk.RIGHT, padx=20, pady=20)
+start_button = tk.Button(root, text="Start Timesheet Process", command=start_renaming, font=("Arial", 12))
+start_button.pack(pady=50)
 
-close_button = tk.Button(root, text="CLOSE", font=("Arial", 12), command=root.quit, width=10)
-close_button.pack(side=tk.LEFT, padx=20, pady=20)
 
-# Run the Tkinter event loop
 root.mainloop()

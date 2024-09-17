@@ -38,7 +38,7 @@ def open_calendar(file_path):
     submit_button = tk.Button(calendar_window, text="SUBMIT", command=select_date, font=("Arial", 10))
     submit_button.pack(pady=10)
 
-# Function to start the renaming process
+
 def start_renaming():
     def open_name_window(new_file_path):
         name_window = tk.Toplevel(root)
